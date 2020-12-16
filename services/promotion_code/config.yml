@@ -1,3 +1,24 @@
 redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+  pass: ""
+  pool_size: 50
 
 postgres:
+  host: "localhost"
+  port: 5432
+  db: "promotion-code-db"
+  user: "postgres"
+  pass: "123456"
+  connections_count: 1
+
+promotion_code:
+  code_value: "asdfgh"
+  lock_key: "zxcv"
+  max_codes: 1000
+  start_time: "2020-12-02T16:00:00"
+  end_time: "2020-12-02T17:00:00"
+
+http_server:
+  address: "127.0.0.1:8000"

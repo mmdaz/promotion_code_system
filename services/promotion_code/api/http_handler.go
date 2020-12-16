@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/labstack/gommon/log"
 	"gitlab.com/mmdaz/arvan-challenge/services/promotion_code/internal/promotion_code"
 	"net/http"
 )
@@ -15,8 +16,10 @@ func NewHttpHandler(promotionCodeCore *promotion_code.Core) *HttpHandler {
 }
 
 func (h HttpHandler) ApplyCode(ctx *gin.Context) {
-	err := h.promotionCodeCore.ApplyPromotionCode()
+	phoneNumber := ctx.Request.Header.Get("PhoneNumber")
+	err := h.promotionCodeCore.ApplyPromotionCode(phoneNumber)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, "")
+		log.Error(err)
+		ctx.JSON(http.StatusInternalServerError, err)
 	}
 }

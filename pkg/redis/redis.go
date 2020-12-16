@@ -1,13 +1,15 @@
 package redis
 
 import (
-	"github.com/alicebob/miniredis/v2"
 	"github.com/go-redis/redis/v7"
+	redsyncredis "github.com/go-redsync/redsync/v4/redis"
+	"github.com/go-redsync/redsync/v4/redis/goredis/v7"
 	"github.com/labstack/gommon/log"
 )
 
 type Redis struct {
-	Client *redis.Client
+	Client   *redis.Client
+	SyncPool redsyncredis.Pool
 }
 
 type Option struct {
@@ -19,37 +21,26 @@ type Option struct {
 	MaxRetries int
 }
 
-func NewRedisWithOption(enable bool, option Option) *Redis {
+func NewRedisWithOption(option Option) *Redis {
 	var redisClient *redis.Client
-	if enable {
-		redisClient = redis.NewClient(&redis.Options{
-			Addr:       option.Host + ":" + option.Port,
-			MaxRetries: option.MaxRetries,
-			PoolSize:   option.PoolSize,
-			Password:   option.Pass,
-			DB:         option.DB,
-		})
-	} else {
-		s, err := miniredis.Run()
-		if err != nil {
-			panic(err)
-		}
-		redisClient = redis.NewClient(&redis.Options{
-			Addr:     s.Addr(),
-			Password: "", // no password set
-			DB:       0,  // use default DB
-		})
-	}
+	redisClient = redis.NewClient(&redis.Options{
+		Addr:       option.Host + ":" + option.Port,
+		MaxRetries: option.MaxRetries,
+		PoolSize:   option.PoolSize,
+		Password:   option.Pass,
+		DB:         option.DB,
+	})
 
 	pong, err := redisClient.Ping().Result()
 	if err != nil {
 		log.Fatal("Failed to create redis client")
 	}
-
 	log.Debug("Pong is here:", pong)
 
+	pool := goredis.NewPool(redisClient)
+
 	return &Redis{
-		Client: redisClient,
+		Client:   redisClient,
+		SyncPool: pool,
 	}
 }
-

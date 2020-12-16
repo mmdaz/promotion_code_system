@@ -32,13 +32,11 @@ func NewHTTPServer() *Server {
 }
 
 func (s *Server) Start(address string) {
-	go func(address string) {
-		log.Infof("Start listening HTTP on address: %v", address)
-		err := s.engine.Run(address)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(address)
+	log.Infof("Start listening HTTP on address: %v", address)
+	err := s.engine.Run(address)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (s *Server) AddRoutes(routes ...Route) {

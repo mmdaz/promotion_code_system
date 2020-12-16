@@ -3,10 +3,11 @@ module gitlab.com/mmdaz/arvan-challenge
 go 1.14
 
 require (
-	github.com/alicebob/miniredis/v2 v2.14.1
+	github.com/alicebob/miniredis/v2 v2.14.1 // indirect
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/go-redis/redis/v7 v7.4.0
+	github.com/go-redsync/redsync/v4 v4.0.4
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/json-iterator/go v1.1.10 // indirect

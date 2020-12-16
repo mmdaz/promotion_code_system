@@ -6,12 +6,22 @@ import (
 	"io/ioutil"
 	"log"
 	"strings"
+	"time"
 )
 
 type Config struct {
-	Redis    Redis    `yaml:"redis"`
-	Postgres Postgres `yaml:"postgres_master"`
-	HttpServer
+	Redis         Redis         `yaml:"redis"`
+	Postgres      Postgres      `yaml:"postgres_master"`
+	HttpServer    HttpServer    `yaml:"http_server"`
+	PromotionCode PromotionCode `yaml:"promotion_code"`
+}
+
+type PromotionCode struct {
+	CodeValue string    `yaml:"code_value"`
+	LockKey   string    `yaml:"lock_key"`
+	StartTime time.Time `yaml:"start_time"`
+	EndTime   time.Time `yaml:"end_time"`
+	MaxCodes  int32     `yaml:"max_codes"`
 }
 
 type HttpServer struct {
@@ -24,7 +34,6 @@ type Postgres struct {
 	DB               string `yaml:"db"`
 	User             string `yaml:"user"`
 	Pass             string `yaml:"pass"`
-	BatchCount       int    `yaml:"batch_count"`
 	ConnectionsCount int    `yaml:"connections_count"`
 }
 
@@ -104,5 +113,15 @@ func (conf *Config) Reload() {
 	conf.Postgres.User = viper.GetString("postgres.user")
 	conf.Postgres.Pass = viper.GetString("postgres.pass")
 	conf.Postgres.ConnectionsCount = viper.GetInt("postgres.connections_count")
+
+	// HttpServer
+	conf.HttpServer.Address = viper.GetString("http_server.address")
+
+	// PromotionCode
+	conf.PromotionCode.CodeValue = viper.GetString("promotion_code.code_value")
+	conf.PromotionCode.LockKey = viper.GetString("promotion_code.lock_key")
+	conf.PromotionCode.MaxCodes = viper.GetInt32("promotion_code.max_codes")
+	conf.PromotionCode.StartTime = viper.GetTime("promotion_code.start_time")
+	conf.PromotionCode.EndTime = viper.GetTime("promotion_code.end_time")
 
 }
