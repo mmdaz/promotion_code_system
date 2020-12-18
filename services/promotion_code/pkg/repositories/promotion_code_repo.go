@@ -6,7 +6,7 @@ import (
 )
 
 type PromotionCodeRepo interface {
-	Create(phoneNumber string, code string) error
+	Create(phoneNumber int, code string) error
 	GetAppliedCodeCounts(startTime time.Time, endTime time.Time) (int32, error)
 }
 
@@ -18,7 +18,7 @@ func NewPromotionCodeRepo(db *postgres.PGXDatabase) PromotionCodeRepo {
 	return &PromotionCodeImp{db: db}
 }
 
-func (p PromotionCodeImp) Create(phoneNumber string, code string) error {
+func (p PromotionCodeImp) Create(phoneNumber int, code string) error {
 	_, err := p.db.Exec(`INSERT INTO promotion_code (phone_number, code, created_at) values ($1, $2, $3)`, phoneNumber, code, time.Now())
 	return err
 }

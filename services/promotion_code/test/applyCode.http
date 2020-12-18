@@ -1,6 +1,6 @@
 POST http://localhost:8000/applyCode
 Content-Type: application/json
-PhoneNumber: 09147569102
+PhoneNumber: 989147569108
 
 {}
 

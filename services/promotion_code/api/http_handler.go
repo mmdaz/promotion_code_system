@@ -22,4 +22,5 @@ func (h HttpHandler) ApplyCode(ctx *gin.Context) {
 		log.Error(err)
 		ctx.JSON(http.StatusInternalServerError, err)
 	}
+	ctx.JSON(http.StatusOK, "")
 }

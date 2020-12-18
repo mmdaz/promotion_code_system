@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/alicebob/miniredis/v2 v2.14.1 // indirect
+	github.com/confluentinc/confluent-kafka-go v1.5.2
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/go-redis/redis/v7 v7.4.0
@@ -15,6 +16,8 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/nyaruka/phonenumbers v1.0.60
+	github.com/pkg/errors v0.8.1
 	github.com/spf13/viper v1.7.1
 	github.com/ugorji/go v1.2.1 // indirect
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9 // indirect

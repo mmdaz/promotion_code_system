@@ -14,6 +14,20 @@ type Config struct {
 	Postgres      Postgres      `yaml:"postgres_master"`
 	HttpServer    HttpServer    `yaml:"http_server"`
 	PromotionCode PromotionCode `yaml:"promotion_code"`
+	EndPoints     EndPoints     `yaml:"end_points"`
+	Kafka         Kafka         `yaml:"kafka"`
+}
+
+type Kafka struct {
+	Enable           bool   `yaml:"enable"`
+	BootstrapServers string `yaml:"bootstrap_servers"`
+	GroupID          string `yaml:"group_id"`
+	AutoOffsetReset  string `yaml:"auto_offset_reset"`
+	Topic            string `yaml:"topic"`
+}
+
+type EndPoints struct {
+	Wallet string `yaml:"wallet"`
 }
 
 type PromotionCode struct {
@@ -124,4 +138,13 @@ func (conf *Config) Reload() {
 	conf.PromotionCode.StartTime = viper.GetTime("promotion_code.start_time")
 	conf.PromotionCode.EndTime = viper.GetTime("promotion_code.end_time")
 
+	// EndPoints
+	conf.EndPoints.Wallet = viper.GetString("end_points.wallet")
+
+	// Kafka
+	conf.Kafka.BootstrapServers = viper.GetString("kafka.bootstrap_servers")
+	conf.Kafka.Topic = viper.GetString("kafka.topic")
+	conf.Kafka.Enable = viper.GetBool("kafka.enable")
+	conf.Kafka.GroupID = viper.GetString("kafka.group_id")
+	conf.Kafka.AutoOffsetReset = viper.GetString("kafka.auto_offset_reset")
 }

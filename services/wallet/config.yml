@@ -1,0 +1,10 @@
+postgres:
+  host: "localhost"
+  port: 5432
+  db: "wallet-db"
+  user: "postgres"
+  pass: "123456"
+  connections_count: 1
+
+http_server:
+  address: "127.0.0.1:8001"

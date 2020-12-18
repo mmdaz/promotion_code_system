@@ -4,6 +4,6 @@ import "time"
 
 type PromotionCode struct {
 	Value       string
-	PhoneNumber string
+	PhoneNumber int
 	CreatedAt   time.Time
 }
