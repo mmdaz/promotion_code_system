@@ -9,11 +9,15 @@ import (
 	"strings"
 )
 
+type Wallet interface {
+	IncreaseAmount(phoneNumber int, amount int) error
+}
+
 type HttpClient struct {
 	config *pkg.Config
 }
 
-func NewHttpClient(config *pkg.Config) *HttpClient {
+func NewHttpClient(config *pkg.Config) Wallet {
 	return &HttpClient{config: config}
 }
 

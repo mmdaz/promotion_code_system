@@ -1,7 +1,6 @@
 package promotion_code
 
 import (
-	"context"
 	"errors"
 	"github.com/go-redsync/redsync/v4"
 	"github.com/labstack/gommon/log"
@@ -15,18 +14,16 @@ import (
 type Core struct {
 	config            *pkg.Config
 	redisMutex        *redsync.Mutex
-	ctx               context.Context
-	walletCli         *wallet.HttpClient
+	walletCli         wallet.Wallet
 	promotionCodeRepo repositories.PromotionCodeRepo
 	mu                sync.Mutex
 	updatePublisher   *internal.Publisher
 }
 
-func NewCore(config *pkg.Config, redis *redsync.Mutex, ctx context.Context, promotionCodeRepo repositories.PromotionCodeRepo, walletCli *wallet.HttpClient, updatePublisher *internal.Publisher) *Core {
+func NewCore(config *pkg.Config, redis *redsync.Mutex, promotionCodeRepo repositories.PromotionCodeRepo, walletCli wallet.Wallet, updatePublisher *internal.Publisher) *Core {
 	return &Core{
 		config:            config,
 		redisMutex:        redis,
-		ctx:               ctx,
 		promotionCodeRepo: promotionCodeRepo,
 		walletCli:         walletCli,
 		updatePublisher:   updatePublisher,

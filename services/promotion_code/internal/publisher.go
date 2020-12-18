@@ -8,12 +8,12 @@ import (
 )
 
 type Publisher struct {
-	kafka      *kafka.PubSub
+	kafka      kafka.PubSub
 	config     *pkg.Config
 	updateChan chan int
 }
 
-func NewPublisher(kafka *kafka.PubSub, config *pkg.Config) *Publisher {
+func NewPublisher(kafka kafka.PubSub, config *pkg.Config) *Publisher {
 	p := &Publisher{kafka: kafka, config: config, updateChan: make(chan int)}
 	p.Run()
 	return p

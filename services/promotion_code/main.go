@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
 	"github.com/go-redsync/redsync/v4"
-	"github.com/labstack/gommon/log"
 	"gitlab.com/mmdaz/arvan-challenge/pkg"
 	"gitlab.com/mmdaz/arvan-challenge/pkg/http"
 	"gitlab.com/mmdaz/arvan-challenge/pkg/kafka"
@@ -21,7 +19,6 @@ import (
 func main() {
 	config := pkg.NewConfig("promotion_code", "/home/muhammad/go/src/gitlab.com/mmdaz/arvan-challenge/services/promotion_code/config.yml")
 
-	log.Info(config.PromotionCode.StartTime)
 	postgresCli := postgres.NewPGXPostgres(postgres.Option{
 		Host: config.Postgres.Host,
 		Port: config.Postgres.Port,
@@ -54,10 +51,9 @@ func main() {
 
 	rs := redsync.New(redisCli.SyncPool)
 	mutex := rs.NewMutex(config.PromotionCode.LockKey, redsync.WithExpiry(time.Hour))
-	ctx := context.Background()
 	walletCli := wallet.NewHttpClient(config)
 
-	promotionCodeCore := promotion_code.NewCore(config, mutex, ctx, promotionCodeRepo, walletCli, publisher)
+	promotionCodeCore := promotion_code.NewCore(config, mutex, promotionCodeRepo, walletCli, publisher)
 
 	httpServer := http.NewHTTPServer()
 	httpHandler := api.NewHttpHandler(promotionCodeCore)

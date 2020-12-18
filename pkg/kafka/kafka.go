@@ -9,13 +9,19 @@ import (
 	"time"
 )
 
+type PubSub interface {
+	Publish(topic string, value []byte) error
+	Subscribe(topics []string) error
+	ReadMessage(timeout time.Duration) (*Message, error)
+}
+
 type Message struct {
 	Value     []byte
 	Timestamp time.Time
 	Topic     kafka.TopicPartition
 }
 
-type PubSub struct {
+type KafkaPubSub struct {
 	consumer *kafka.Consumer
 	producer *kafka.Producer
 }
@@ -27,7 +33,7 @@ type KafkaOption struct {
 	DisableAutoCommit bool
 }
 
-func NewKafka(option KafkaOption) *PubSub {
+func NewKafka(option KafkaOption) PubSub {
 	rand.Seed(time.Now().Unix())
 	var gID = fmt.Sprintf("groupid_%d", rand.Int31())
 	if option.GroupID != "random" {
@@ -62,25 +68,25 @@ func NewKafka(option KafkaOption) *PubSub {
 		}
 	}(producer)
 
-	return &PubSub{
+	return &KafkaPubSub{
 		consumer: consumer,
 		producer: producer,
 	}
 }
 
-func (pb *PubSub) Publish(topic string, value []byte) error {
+func (pb *KafkaPubSub) Publish(topic string, value []byte) error {
 	return pb.producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          value,
 	}, nil)
 }
 
-func (pb *PubSub) Subscribe(topics []string) error {
+func (pb *KafkaPubSub) Subscribe(topics []string) error {
 	log.Debug("Subscribe to kafka topic:", topics)
 	return pb.consumer.SubscribeTopics(topics, nil)
 }
 
-func (pb *PubSub) ReadMessage(timeout time.Duration) (*Message, error) {
+func (pb *KafkaPubSub) ReadMessage(timeout time.Duration) (*Message, error) {
 	message, err := pb.consumer.ReadMessage(timeout)
 	if err != nil {
 		return nil, err
