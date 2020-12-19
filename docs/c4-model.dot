@@ -1,0 +1,35 @@
+digraph G {
+    // Global styles
+    graph [fontname="Ubuntu Light", fontsize=8];
+    node  [fontname="Ubuntu Light", fontsize=8];
+    edge  [fontname="Ubuntu Light", fontsize=6];
+
+    // Define nodes
+    person[style=filled, shape=trapezium, fillcolor="#004179", fontcolor="white", label="User"];
+    promotion_code_service[style=filled, shape=box, fillcolor="#3B8CD2", fontcolor="white", label="Promotion Code Service\n[Container: golang]"];
+    wallet_service[style=filled, shape=hexagon, fillcolor="#3B8CD2", fontcolor="white", label="Wallet Service\n[Container: golang]"];
+    event_bus[style=filled, shape=parallelogram, fillcolor="#3B8CD2", fontcolor="white", label="Event Bus\n[Container: kafka]"];
+    promotion_db[style=filled, shape=cylinder, fillcolor="#3B8CD2", fontcolor="white", label="Promotion DB\n[Container: PostgreSQL]"];
+    wallet_db[style=filled, shape=cylinder, fillcolor="#3B8CD2", fontcolor="white", label="Wallet DB\n[Container: PostgreSQL]"];
+    lock[style=filled, shape=cylinder, fillcolor="#3B8CD2", fontcolor="white", label="Lock\n[Container: Redis]"];
+
+
+    subgraph cluster_promotion {
+        graph [style="dotted", fontname="Ubuntu Light", fontsize=8];
+        node  [fontname="Ubuntu Light", fontsize=8];
+        edge  [fontname="Ubuntu Light", fontsize=6];
+
+        label = "Promotion Code\n[Software System]";
+        person -> promotion_code_service [label="ApplyPromotionCode\n[http]"];
+        promotion_code_service -> lock [label="Lock/Unlock"];
+        promotion_code_service -> event_bus [label="Publish events"];
+        promotion_code_service -> promotion_db [label="Write/Read"];
+
+
+        promotion_code_service -> wallet_service [label="Increase Cache\n[http]"];
+        wallet_service -> wallet_db [label="Write/Read"];
+
+        {rank=same; promotion_code_service wallet_service };
+        {rank=same; event_bus wallet_db lock promotion_db};
+    }
+}
